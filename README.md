@@ -1,1 +1,169 @@
-# quiz
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>🎉 Kids Fun Quiz 🎉</title>
+<style>
+body {
+    font-family: 'Comic Sans MS', Arial, sans-serif;
+    background: linear-gradient(135deg,#f6d365,#fda085);
+    margin:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+.card {
+    background:white;
+    border-radius:25px;
+    padding:30px;
+    width:400px;
+    box-shadow:0 15px 35px rgba(0,0,0,0.3);
+}
+h1, h2 {
+    text-align:center;
+    color:#ff5f6d;
+    text-shadow:1px 1px #ffe6e6;
+}
+input[type=text] {
+    width:90%;
+    padding:10px;
+    font-size:16px;
+    border-radius:10px;
+    border:2px solid #ffb347;
+}
+button {
+    margin:10px;
+    padding:10px 20px;
+    border:none;
+    border-radius:20px;
+    background:linear-gradient(to right,#ff5f6d,#ffc371);
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
+}
+button:hover { transform:scale(1.05); }
+.page { display:none; }
+.question { margin:15px 0; font-size:16px; }
+.correct { color:green; font-weight:bold; }
+.wrong { color:red; font-weight:bold; }
+</style>
+</head>
+<body>
+<div class="card">
+
+<!-- NAME PAGE -->
+<div id="namePage">
+    <h1>🎉 Kids Quiz 🎉</h1>
+    <p style="text-align:center">Enter your name 👇</p>
+    <center>
+        <input type="text" id="kidName" placeholder="Your Name"><br><br>
+        <button onclick="startQuiz()">Start Quiz</button>
+    </center>
+</div>
+
+<!-- QUIZ PAGE -->
+<div id="quizPage" class="page">
+    <h2 id="partTitle">Question 1 of 25</h2>
+    <div class="question" id="questionText"></div>
+    <div id="options"></div>
+    <center>
+        <button onclick="nextQuestion()">Next ➡️</button>
+    </center>
+</div>
+
+<!-- RESULT PAGE -->
+<div id="resultPage" class="page">
+    <h1>🎉 Quiz Finished 🎉</h1>
+    <p id="scoreText"></p>
+    <div id="answerReview"></div>
+</div>
+
+</div>
+
+<script>
+// Questions Array
+const questions = [
+    {q:"1. Mysteries means:", options:["Things fully understood","Clear answers","Things not fully understood"], answer:2},
+    {q:"2. Inspected means:", options:["Ignored","Checked carefully","Broken"], answer:1},
+    {q:"3. Surveyed means:", options:["Examined closely","Destroyed","Painted"], answer:0},
+    {q:"4. Dread means:", options:["Happiness","Great fear","Surprise"], answer:1},
+    {q:"5. Multiple means:", options:["Only one","Increased in number","Very small"], answer:1},
+    {q:"6. Uninspiring means:", options:["Very exciting","Not interesting","Funny"], answer:1},
+    {q:"7. Vegetation means:", options:["Buildings","Animals","Plants of an area"], answer:2},
+    {q:"8. Frag means:", options:["Large piece","Small piece","Sharp tool"], answer:1},
+    {q:"9. Cheerfulness means:", options:["Sadness","Anger","Happiness"], answer:2},
+    {q:"10. Infinite means:", options:["Limited","Endless","Broken"], answer:1},
+    {q:"11. Mission means:", options:["Game","Important task","Mistake"], answer:1},
+    {q:"12. Consent means:", options:["Refusal","Permission","Fight"], answer:1},
+    {q:"13. Intricate means:", options:["Easy","Very complicated","Small"], answer:1},
+    {q:"14. Prominent means:", options:["Hidden","Well known","Weak"], answer:1},
+    {q:"15. Sort means:", options:["Type or kind","Throw away","Mix"], answer:0},
+    {q:"16. Hide means:", options:["Show","Cover or conceal","Break"], answer:1},
+    {q:"17. Discern means:", options:["Confuse","Understand clearly","Forget"], answer:1},
+    {q:"18. Ground means:", options:["Sky","Land or earth","Water"], answer:1},
+    {q:"19. Novice means:", options:["Expert","Beginner","Teacher"], answer:1},
+    {q:"20. Emulate means:", options:["Copy or follow","Destroy","Laugh"], answer:0},
+    {q:"21. Proportion means:", options:["Wrong order","Correct relationship of parts","Fight"], answer:1},
+    {q:"22. Cuddle means:", options:["Push away","Hold lovingly","Shout"], answer:1},
+    {q:"23. Dispute means:", options:["Agreement","Argument","Gift"], answer:1},
+    {q:"24. Sublime means:", options:["Very beautiful","Ugly","Small"], answer:0},
+    {q:"25. Fluttered means:", options:["Moved quickly","Slept","Sat"], answer:0}
+];
+
+let currentQ = 0;
+let score = 0;
+let userAnswers = [];
+
+function startQuiz(){
+    const name = document.getElementById('kidName').value.trim();
+    if(name===''){ alert('Enter your name 😊'); return; }
+    document.getElementById('namePage').style.display='none';
+    document.getElementById('quizPage').style.display='block';
+    showQuestion();
+}
+
+function showQuestion(){
+    document.getElementById('partTitle').innerText = `Question ${currentQ+1} of ${questions.length}`;
+    document.getElementById('questionText').innerText = questions[currentQ].q;
+    const optsDiv = document.getElementById('options');
+    optsDiv.innerHTML='';
+    questions[currentQ].options.forEach((opt,i)=>{
+        optsDiv.innerHTML += `<input type="radio" name="option" value="${i}"> ${opt}<br>`;
+    });
+}
+
+function nextQuestion(){
+    const selected = document.querySelector('input[name="option"]:checked');
+    if(!selected){ alert('Please select an answer 😊'); return; }
+    userAnswers.push(parseInt(selected.value));
+    if(parseInt(selected.value) === questions[currentQ].answer) score++;
+    currentQ++;
+    if(currentQ < questions.length){
+        showQuestion();
+    } else {
+        showResult();
+    }
+}
+
+function showResult(){
+    document.getElementById('quizPage').style.display='none';
+    document.getElementById('resultPage').style.display='block';
+    document.getElementById('scoreText').innerText = `Hey ${document.getElementById('kidName').value}, You got ${score} out of ${questions.length} correct!`;
+
+    let reviewHTML = '<h3>Review of your answers:</h3>';
+    questions.forEach((q,i)=>{
+        const userAns = userAnswers[i];
+        const correctAns = q.answer;
+        if(userAns === correctAns){
+            reviewHTML += `<p>${q.q} <span class="correct">✅ Correct</span></p>`;
+        } else {
+            reviewHTML += `<p>${q.q} <span class="wrong">❌ Wrong</span> (Correct: ${q.options[correctAns]})</p>`;
+        }
+    });
+    document.getElementById('answerReview').innerHTML = reviewHTML;
+}
+</script>
+</body>
+</html>
